@@ -18,7 +18,7 @@
         .input-field { width: 100%; padding: 16px; border: 1px solid #e8e8e4; border-radius: 12px; font-size: 16px; margin-bottom: 1rem; outline: none; }
         .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; }
 
-        /* KRAEPELIN CLEAN UI */
+        /* TEST UI */
         .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; position: relative; }
         .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 700; font-size: 18px; }
         
@@ -39,13 +39,13 @@
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Layout Baris: Angka dulu baru Kotak Jawaban */
+        /* Layout Row: Soal Kiri, Jawaban Kanan */
         .row-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 45px; /* Jarak antara deret angka dan kotak */
-            height: 140px; /* Space vertikal lega */
+            gap: 45px; 
+            height: 140px; /* Space lega sesuai gambar */
             width: 350px;
             position: relative;
         }
@@ -71,10 +71,10 @@
             justify-content: center;
             background: #fff;
             color: #2563eb;
-            font-size: 42px; /* Angka jawaban Gede */
+            font-size: 42px; 
             font-weight: 700;
             transition: all 0.2s;
-            margin-top: 5px; /* Biar sejajar di tengah-tengah dua angka soal */
+            margin-top: 5px; 
         }
 
         .ans-box.active {
@@ -112,7 +112,7 @@
             cursor: pointer;
         }
 
-        .kbtn:active { background: #2563eb; transform: scale(0.95); }
+        .kbtn:active { background: #2563eb; }
 
         /* Result */
         #result { padding: 2rem; align-items: center; justify-content: center; text-align: center; }
@@ -136,10 +136,10 @@
     <div class="inner-container">
         <h1>Instruksi Tes</h1>
         <div style="text-align: left; background: white; padding: 25px; border-radius: 20px; border: 1px solid #e8e8e4; margin: 25px 0; font-size: 16px;">
-            <p>• Jumlahkan angka <b>Atas</b> dan <b>Bawah</b>.</p>
-            <p>• Jawab pada <b>Kotak Samping Kanan</b> soal.</p>
-            <p>• Masukkan digit terakhir (Contoh: 9+6=15, ketik <b>5</b>).</p>
-            <p>• Gunakan angka keyboard atau tombol layar.</p>
+            <p style="margin-bottom: 10px;">• Angka muncul secara <b>Berantai Vertikal</b>.</p>
+            <p style="margin-bottom: 10px;">• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawahnya</b>.</p>
+            <p style="margin-bottom: 10px;">• Jawab pada <b>Kotak Samping Kanan</b> soal.</p>
+            <p>• Ketik <b>digit terakhir</b> saja (Contoh: 9+6=15, ketik 5).</p>
         </div>
         <button class="btn-action" onclick="startTest()">Mulai Tes →</button>
     </div>
@@ -156,15 +156,7 @@
     </div>
 
     <div class="floating-keypad">
-        <button class="kbtn" onclick="handleInput(1)">1</button>
-        <button class="kbtn" onclick="handleInput(2)">2</button>
-        <button class="kbtn" onclick="handleInput(3)">3</button>
-        <button class="kbtn" onclick="handleInput(4)">4</button>
-        <button class="kbtn" onclick="handleInput(5)">5</button>
-        <button class="kbtn" onclick="handleInput(6)">6</button>
-        <button class="kbtn" onclick="handleInput(7)">7</button>
-        <button class="kbtn" onclick="handleInput(8)">8</button>
-        <button class="kbtn" onclick="handleInput(9)">9</button>
+        <script>for(let i=1;i<=9;i++) document.write(`<button class="kbtn" onclick="handleInput(${i})">${i}</button>`);</script>
         <button class="kbtn" onclick="handleInput(0)">0</button>
     </div>
 </div>
@@ -186,7 +178,7 @@
     let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
     let curSeg = 1, timeLeft = 30, currentIdx = 0;
     let timerInterval;
-    const ROWS_COUNT = 80;
+    const ROWS_PER_SEGMENT = 100;
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
 
     window.addEventListener('keydown', (e) => {
@@ -217,23 +209,15 @@
         column.style.transform = `translateY(0px)`;
         
         let pool = [];
-        for(let i=0; i <= ROWS_COUNT; i++) pool.push(Math.floor(Math.random() * 9) + 1);
+        for(let i=0; i <= ROWS_PER_SEGMENT; i++) pool.push(Math.floor(Math.random() * 9) + 1);
         
-        for (let i = 0; i < ROWS_COUNT; i++) {
-            let topNum = pool[i];
-            let botNum = pool[i+1];
-
+        for (let i = 0; i < ROWS_PER_SEGMENT; i++) {
+            let top = pool[i];
+            let bot = pool[i+1];
             const div = document.createElement('div');
             div.className = 'row-item';
-            div.innerHTML = `
-                <div class="num-stack">
-                    <div>${topNum}</div>
-                    <div style="height:30px"></div>
-                    <div>${botNum}</div>
-                </div>
-                <div class="ans-box" id="ans-${i}"></div>
-            `;
-            div.dataset.correct = (topNum + botNum) % 10;
+            div.innerHTML = `<div class="num-stack"><div>${top}</div><div style="height:35px"></div><div>${bot}</div></div><div class="ans-box" id="ans-${i}"></div>`;
+            div.dataset.correct = (top + bot) % 10;
             column.appendChild(div);
         }
         updateActiveUI();
@@ -252,22 +236,13 @@
     function handleInput(n) {
         const rows = document.querySelectorAll('.row-item');
         if (currentIdx >= rows.length) return;
-
         const correctAns = parseInt(rows[currentIdx].dataset.correct);
         const box = document.getElementById(`ans-${currentIdx}`);
-
         totalAns++;
         if (n === correctAns) totalCorrect++;
-        
-        box.textContent = n;
-        box.classList.add('filled');
+        box.textContent = n; box.classList.add('filled');
         currentIdx++;
-        
-        if (currentIdx < ROWS_COUNT) {
-            updateActiveUI();
-        } else {
-            setupSegment(); 
-        }
+        if (currentIdx < ROWS_PER_SEGMENT) updateActiveUI(); else setupSegment();
     }
 
     function startTimer() {
@@ -275,13 +250,8 @@
             timeLeft--;
             document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
             if (timeLeft <= 0) {
-                if (curSeg < 40) {
-                    curSeg++; timeLeft = 30;
-                    document.getElementById('seg-val').textContent = curSeg + " / 40";
-                    setupSegment();
-                } else {
-                    endTest();
-                }
+                if (curSeg < 40) { curSeg++; timeLeft = 30; document.getElementById('seg-val').textContent = curSeg + " / 40"; setupSegment(); }
+                else endTest();
             }
         }, 1000);
     }
@@ -291,10 +261,7 @@
         document.getElementById('test').classList.remove('active');
         document.getElementById('result').classList.add('active');
         document.getElementById('r-score').textContent = totalCorrect;
-        fetch(scriptURL, {
-            method: 'POST', mode: 'no-cors',
-            body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect, akurasi: Math.round((totalCorrect/totalAns)*100)+"%" })
-        }).then(() => { document.getElementById('status-db').style.display = 'block'; });
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect, akurasi: Math.round((totalCorrect/totalAns)*100)+"%" }) }).then(() => { document.getElementById('status-db').style.display = 'block'; });
     }
 </script>
 </body>
