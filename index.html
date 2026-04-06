@@ -11,11 +11,11 @@
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: flex; flex-direction: column; }
         
-        /* Layout Header & Timer */
+        /* Header */
         .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; }
         .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 700; font-size: 18px; }
 
-        /* KRAEPELIN ZIG-ZAG ENGINE */
+        /* KRAEPELIN ENGINE */
         .kraepelin-view {
             flex: 1;
             display: flex;
@@ -27,37 +27,39 @@
         .scroll-container {
             display: flex;
             flex-direction: column;
-            padding-top: 300px; /* Start biar pas di tengah */
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 300px;
+            padding-top: 250px; 
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
         }
 
-        /* Styling per angka (Cell) */
+        /* Row Layout */
         .data-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Kiri Soal, Kanan Jawaban */
-            height: 90px; /* Jarak antar angka */
-            align-items: center;
+            display: flex;
+            align-items: flex-start; /* Biar angka stay di atas */
+            justify-content: space-between;
+            height: 120px; /* Tinggi baris */
+            position: relative;
         }
 
         .soal-cell {
             font-family: 'DM Mono', monospace;
-            font-size: 60px;
+            font-size: 64px;
             font-weight: 700;
+            width: 80px;
             text-align: center;
-            color: #1a1a18;
         }
 
-        .jawab-cell {
+        /* Kotak Jawab Sejajar Sela Angka */
+        .ans-wrapper {
+            width: 100px;
             position: relative;
-            display: flex;
-            justify-content: center;
         }
 
-        /* Kotak Jawaban Biru di Sela-Sela (Zig-Zag) */
         .ans-input {
             position: absolute;
-            top: 45px; /* Naruh kotak tepat di tengah antara dua baris angka */
+            top: 60px; /* SETENGAH DARI HEIGHT 120px = PAS DI SELA-SELA */
+            left: 50%;
+            transform: translateX(-50%);
             width: 75px;
             height: 75px;
             border: 4px solid #e2e8f0;
@@ -70,14 +72,12 @@
             font-weight: 700;
             color: #2563eb;
             z-index: 10;
-            transition: all 0.2s;
         }
 
         .ans-input.active {
             border-color: #2563eb;
             background: #f0f7ff;
             box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
-            transform: scale(1.1);
         }
 
         .ans-input.filled {
@@ -86,60 +86,32 @@
             color: #444;
         }
 
-        /* FLOATING KEYPAD */
+        /* KEYBOARD */
         .floating-keypad {
             background: #1a1a18;
             padding: 15px 10px 30px;
-            width: 100%;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
             z-index: 100;
         }
-
-        .kbtn {
-            background: #334155;
-            border: none;
-            height: 65px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 24px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .kbtn { background: #334155; border: none; height: 65px; border-radius: 12px; color: #fff; font-size: 24px; font-weight: 700; }
         .kbtn:active { background: #2563eb; }
 
         /* Intro & Result */
-        #intro, #guide, #result { align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow-y: auto; }
+        #intro, #guide, #result { align-items: center; justify-content: center; padding: 2rem; text-align: center; }
         .inner { max-width: 450px; width: 100%; }
-        .logo-banner { width: 100%; max-width: 300px; margin-bottom: 2rem; }
-        .input-field { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 1rem; font-size: 16px; outline: none; }
-        .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; }
+        .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="screen active" id="intro">
     <div class="inner">
-        <img src="logo.png" class="logo-banner">
+        <img src="logo.png" style="width: 100%; max-width: 280px; margin-bottom: 20px;">
         <h1>Tes Kraepelin</h1>
         <p style="font-weight: 600; margin-bottom: 20px;">PT. Hexa Daya Solusi</p>
-        <input type="text" id="nama" class="input-field" placeholder="Nama Lengkap">
-        <input type="email" id="email" class="input-field" placeholder="Email">
-        <button class="btn-action" onclick="toGuide()">Lanjut →</button>
-    </div>
-</div>
-
-<div class="screen" id="guide">
-    <div class="inner">
-        <h1>Instruksi Berantai</h1>
-        <div style="text-align: left; margin: 25px 0; font-size: 16px; line-height: 1.6;">
-            <p>1. Angka soal ada di <b>Kolom Kiri</b>.</p>
-            <p>2. Jumlahkan angka saat ini dengan bawahnya.</p>
-            <p>3. Jawab di <b>Kotak Biru</b> di sebelah kanan (Zig-zag).</p>
-            <p>4. Masukkan angka satuan saja (Contoh 9+8=17, isi 7).</p>
-        </div>
-        <button class="btn-action" onclick="startTest()">Mulai Sekarang →</button>
+        <button class="btn-action" onclick="startFlow()">Mulai Tes →</button>
     </div>
 </div>
 
@@ -159,37 +131,23 @@
 
 <div class="screen" id="result">
     <div class="inner">
-        <h1>Tes Selesai</h1>
+        <h1>Selesai</h1>
         <div style="background: #1a1a18; color: #fff; padding: 50px; border-radius: 24px; margin: 20px 0;">
-            <div style="font-size: 14px; opacity: 0.6;">SKOR BENAR</div>
             <div style="font-size: 84px; font-weight: 700;" id="r-score">0</div>
-            <p id="status-db" style="color: #4ade80; display: none; margin-top: 10px;">✓ Data Tersimpan</p>
         </div>
-        <button class="btn-action" onclick="location.reload()">Selesai</button>
+        <button class="btn-action" onclick="location.reload()">Ulangi</button>
     </div>
 </div>
 
 <script>
-    let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
-    let curSeg = 1, timeLeft = 30, currentIdx = 0;
-    let timerInterval, pool = [];
-    const ROWS_PER_SEGMENT = 100;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
+    let totalCorrect = 0, curSeg = 1, timeLeft = 30, currentIdx = 0, pool = [];
 
     window.addEventListener('keydown', (e) => {
         if (e.key >= '0' && e.key <= '9') handleInput(parseInt(e.key));
     });
 
-    function toGuide() {
-        namaUser = document.getElementById('nama').value;
-        emailUser = document.getElementById('email').value;
-        if (!namaUser || !emailUser) return alert("Isi data dulu!");
+    function startFlow() {
         document.getElementById('intro').classList.remove('active');
-        document.getElementById('guide').classList.add('active');
-    }
-
-    function startTest() {
-        document.getElementById('guide').classList.remove('active');
         document.getElementById('test').classList.add('active');
         setupSegment();
         startTimer();
@@ -199,34 +157,19 @@
         currentIdx = 0;
         const container = document.getElementById('scroll-content');
         container.innerHTML = '';
-        container.style.transform = `translateY(0px)`;
         
         pool = [];
-        for(let i=0; i <= ROWS_PER_SEGMENT; i++) pool.push(Math.floor(Math.random() * 9) + 1);
+        for(let i=0; i <= 60; i++) pool.push(Math.floor(Math.random() * 9) + 1);
 
-        for (let i = 0; i < ROWS_PER_SEGMENT; i++) {
+        for (let i = 0; i < 60; i++) {
             const row = document.createElement('div');
             row.className = 'data-row';
-            
-            // Kolom Kiri: Angka Soal
-            const cellSoal = document.createElement('div');
-            cellSoal.className = 'soal-cell';
-            cellSoal.textContent = pool[i];
-
-            // Kolom Kanan: Kotak Jawaban (Zig-zag)
-            const cellJawab = document.createElement('div');
-            cellJawab.className = 'jawab-cell';
-            
-            // Kotak jawaban diletakkan di sela-sela angka (i & i+1)
-            if (i < ROWS_PER_SEGMENT - 1) {
-                const ansBox = document.createElement('div');
-                ansBox.className = 'ans-input';
-                ansBox.id = `ans-${i}`;
-                cellJawab.appendChild(ansBox);
-            }
-
-            row.appendChild(cellSoal);
-            row.appendChild(cellJawab);
+            row.innerHTML = `
+                <div class="soal-cell">${pool[i]}</div>
+                <div class="ans-wrapper">
+                    ${i < 59 ? `<div class="ans-input" id="ans-${i}"></div>` : ''}
+                </div>
+            `;
             container.appendChild(row);
         }
         updateActiveUI();
@@ -237,8 +180,7 @@
         const activeBox = document.getElementById(`ans-${currentIdx}`);
         if (activeBox) {
             activeBox.classList.add('active');
-            // Scroll kamera biar kotak biru stay di tengah
-            const offset = (currentIdx * 90);
+            const offset = (currentIdx * 120);
             document.getElementById('scroll-content').style.transform = `translateY(-${offset}px)`;
         }
     }
@@ -246,39 +188,34 @@
     function handleInput(n) {
         if (!document.getElementById('test').classList.contains('active')) return;
         const correct = (pool[currentIdx] + pool[currentIdx+1]) % 10;
-        const box = document.getElementById(`ans-${currentIdx}`);
-
-        totalAns++;
         if (n === correct) totalCorrect++;
+        
+        const box = document.getElementById(`ans-${currentIdx}`);
         box.textContent = n;
         box.classList.add('filled');
         
         currentIdx++;
-        if (currentIdx < ROWS_PER_SEGMENT - 1) updateActiveUI();
+        if (currentIdx < 59) updateActiveUI();
         else setupSegment();
     }
 
     function startTimer() {
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
-            if (timeLeft <= 0) {
+        setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+            } else {
                 if (curSeg < 40) {
                     curSeg++; timeLeft = 30;
                     document.getElementById('seg-val').textContent = curSeg + " / 40";
                     setupSegment();
-                } else finish();
+                } else {
+                    document.getElementById('test').classList.remove('active');
+                    document.getElementById('result').classList.add('active');
+                    document.getElementById('r-score').textContent = totalCorrect;
+                }
             }
         }, 1000);
-    }
-
-    function finish() {
-        clearInterval(timerInterval);
-        document.getElementById('test').classList.remove('active');
-        document.getElementById('result').classList.add('active');
-        document.getElementById('r-score').textContent = totalCorrect;
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect }) })
-        .then(() => { document.getElementById('status-db').style.display = 'block'; });
     }
 </script>
 </body>
