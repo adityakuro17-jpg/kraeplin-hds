@@ -10,25 +10,41 @@
         html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: #f8f8f6; color: #1a1a18; overflow: hidden; }
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: flex; flex-direction: column; }
+        
+        /* Intro Screen */
         #intro { align-items: center; justify-content: center; padding: 2rem 1.5rem; overflow-y: auto; }
-        .intro-inner { max-width: 420px; width: 100%; }
-        .logo-mark { width: 48px; height: 48px; background: #1a1a18; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+        .intro-inner { max-width: 420px; width: 100%; text-align: center; }
+        
+        /* Logo Header Styling */
+        .logo-container { width: 100%; margin-bottom: 2rem; }
+        .logo-banner { width: 100%; max-width: 380px; height: auto; display: block; margin: 0 auto; }
+        
         h1 { font-size: 28px; font-weight: 600; margin-bottom: 0.5rem; }
         .subtitle { font-size: 15px; color: #6b6b66; margin-bottom: 1.5rem; }
-        .input-group { margin-bottom: 1.2rem; }
+        
+        /* Form Styling */
+        .input-group { margin-bottom: 1.2rem; text-align: left; }
         .input-group label { display: block; font-size: 12px; font-weight: 600; color: #9b9b96; text-transform: uppercase; margin-bottom: 8px; }
         .input-field { width: 100%; padding: 14px; border: 1px solid #e8e8e4; border-radius: 12px; font-size: 16px; outline: none; transition: 0.2s; font-family: inherit; }
         .input-field:focus { border-color: #1a1a18; box-shadow: 0 0 0 4px rgba(26, 26, 24, 0.05); }
+        
         .btn-start { width: 100%; padding: 16px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-start:active { transform: scale(0.98); }
+
+        /* Test Screen */
         #test { background: #2563eb; color: #fff; }
         .test-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
         .timer-box { background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 600; min-width: 80px; text-align: center; }
         .number-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .num-display { font-size: 90px; font-weight: 600; font-family: 'DM Mono'; display: flex; align-items: center; gap: 20px; }
+        
+        /* Keypad */
         .keypad-wrap { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px 20px 40px; border-radius: 24px 24px 0 0; }
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 400px; margin: 0 auto; }
         .kbtn { background: rgba(255,255,255,0.2); border: none; height: 65px; border-radius: 16px; color: #fff; font-size: 24px; font-weight: 500; cursor: pointer; font-family: 'DM Mono'; -webkit-tap-highlight-color: transparent; }
         .kbtn:active { background: rgba(255,255,255,0.4); }
+
+        /* Result Screen */
         #result { padding: 2rem; align-items: center; justify-content: center; overflow-y: auto; }
         .result-inner { max-width: 450px; width: 100%; text-align: center; }
         .score-hero { background: #1a1a18; color: #fff; padding: 40px 20px; border-radius: 24px; margin: 20px 0; }
@@ -39,11 +55,23 @@
 
 <div class="screen active" id="intro">
     <div class="intro-inner">
-        <div class="logo-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3h7v18H3zM14 3h7v11h-7zM14 18h7v3h-7z"/></svg></div>
+        <div class="logo-container">
+            <img src="logo.png" alt="Hexa Daya Solusi" class="logo-banner">
+        </div>
+        
         <h1>Tes Kraepelin</h1>
         <p class="subtitle">Waktu: 60 Menit (20 Segmen x 3 Menit). Fokus dan teliti.</p>
-        <div class="input-group"><label>Nama Lengkap</label><input type="text" id="namaKandidat" class="input-field" placeholder="Nama..." autocomplete="off"></div>
-        <div class="input-group"><label>Email</label><input type="email" id="emailKandidat" class="input-field" placeholder="Email..." autocomplete="off"></div>
+
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="namaKandidat" class="input-field" placeholder="Nama sesuai KTP..." autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="emailKandidat" class="input-field" placeholder="contoh@email.com" autocomplete="off">
+        </div>
+
         <button class="btn-start" onclick="validasiStart()">Mulai Tes Sekarang →</button>
     </div>
 </div>
@@ -54,7 +82,11 @@
         <div class="timer-box" id="timer-display">03:00</div>
     </div>
     <div class="number-area">
-        <div class="num-display"><span id="num-top">7</span><span style="opacity: 0.3;">+</span><span id="num-bot">8</span></div>
+        <div class="num-display">
+            <span id="num-top">7</span>
+            <span style="opacity: 0.3;">+</span>
+            <span id="num-bot">8</span>
+        </div>
     </div>
     <div class="keypad-wrap">
         <div class="keypad">
@@ -66,6 +98,7 @@
 
 <div class="screen" id="result">
     <div class="result-inner">
+        <img src="logo.png" alt="Hexa Daya Solusi" class="logo-banner" style="max-width: 200px; margin-bottom: 1rem;">
         <h1>Selesai</h1>
         <div class="score-hero">
             <div style="font-size: 12px; color: #9b9b96;">SKOR AKHIR</div>
@@ -78,14 +111,19 @@
 
 <script>
     let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
-    let curSeg = 1, timeLeft = 180; // 180 detik = 3 menit
+    let curSeg = 1, timeLeft = 180; 
     let timerInterval;
+    
+    // Pastikan URL Apps Script ini milik Anda sendiri
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
 
     function validasiStart() {
         namaUser = document.getElementById('namaKandidat').value.trim();
         emailUser = document.getElementById('emailKandidat').value.trim();
-        if (namaUser.length < 3 || !emailUser.includes('@')) { alert("Isi Nama & Email!"); return; }
+        if (namaUser.length < 3 || !emailUser.includes('@')) { 
+            alert("Harap isi Nama Lengkap dan Email yang valid!"); 
+            return; 
+        }
         startTest();
     }
 
@@ -103,7 +141,7 @@
             if (timeLeft <= 0) {
                 if (curSeg < 20) {
                     curSeg++;
-                    timeLeft = 180; // Reset ke 3 menit
+                    timeLeft = 180; 
                     document.getElementById('seg-val').textContent = curSeg + " / 20";
                     generateNumbers();
                 } else {
@@ -146,8 +184,16 @@
         fetch(scriptURL, {
             method: 'POST', mode: 'no-cors', cache: 'no-cache',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect, akurasi: akurasi + "%", konsistensi: "Normal" })
-        }).then(() => { document.getElementById('status-db').style.display = 'block'; });
+            body: JSON.stringify({ 
+                nama: namaUser, 
+                email: emailUser, 
+                skor: totalCorrect, 
+                akurasi: akurasi + "%", 
+                konsistensi: "Normal" 
+            })
+        }).then(() => { 
+            document.getElementById('status-db').style.display = 'block'; 
+        }).catch(err => console.log("Error simpan data"));
     }
 </script>
 </body>
