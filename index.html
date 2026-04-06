@@ -51,7 +51,7 @@
 <div class="screen" id="test">
     <div class="test-header">
         <div>Segmen <span id="seg-val">1 / 20</span></div>
-        <div class="timer-box" id="timer-display">03:00</div>
+        <div class="timer-box" id="timer-display">00:05</div>
     </div>
     <div class="number-area">
         <div class="num-display"><span id="num-top">7</span><span style="opacity: 0.3;">+</span><span id="num-bot">8</span></div>
@@ -78,7 +78,7 @@
 
 <script>
     let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
-    let curSeg = 1, timeLeft = 5; // 180 detik = 3 menit
+    let curSeg = 1, timeLeft = 5; // 5 detik = 3 menit
     let timerInterval;
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
 
@@ -103,7 +103,7 @@
             if (timeLeft <= 0) {
                 if (curSeg < 20) {
                     curSeg++;
-                    timeLeft = 180; // Reset ke 3 menit
+                    timeLeft = 5; // Reset ke 3 menit
                     document.getElementById('seg-val').textContent = curSeg + " / 20";
                     generateNumbers();
                 } else {
