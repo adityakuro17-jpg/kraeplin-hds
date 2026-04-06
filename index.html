@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Kraepelin - Rekrutmen</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: #f8f8f6; color: #1a1a18; overflow: hidden; }
+        .screen { display: none; min-height: 100vh; }
+        .screen.active { display: flex; flex-direction: column; }
+        
+        /* Intro Screen */
+        #intro { align-items: center; justify-content: center; padding: 2rem 1.5rem; overflow-y: auto; }
+        .intro-inner { max-width: 420px; width: 100%; padding: 20px 0; }
+        .logo-mark { width: 48px; height: 48px; background: #1a1a18; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 15px; color: #6b6b66; margin-bottom: 1.5rem; }
+
+        /* Input Styling */
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: #9b9b96; text-transform: uppercase; margin-bottom: 8px; }
+        .input-field { width: 100%; padding: 14px; border: 1px solid #e8e8e4; border-radius: 12px; font-size: 16px; outline: none; transition: 0.2s; font-family: inherit; }
+        .input-field:focus { border-color: #1a1a18; box-shadow: 0 0 0 4px rgba(26, 26, 24, 0.05); }
+
+        .btn-start { width: 100%; padding: 16px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-start:active { transform: scale(0.98); }
+
+        /* Test Screen */
+        #test { background: #2563eb; color: #fff; }
+        .test-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
+        .timer-box { background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 600; }
+        .number-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .num-display { font-size: 90px; font-weight: 600; font-family: 'DM Mono'; display: flex; align-items: center; gap: 20px; }
+        
+        /* Keypad */
+        .keypad-wrap { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px 20px 40px; border-radius: 24px 24px 0 0; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 400px; margin: 0 auto; }
+        .kbtn { background: rgba(255,255,255,0.2); border: none; height: 65px; border-radius: 16px; color: #fff; font-size: 24px; font-weight: 500; cursor: pointer; font-family: 'DM Mono'; }
+        .kbtn:active { background: rgba(255,255,255,0.4); }
+
+        /* Result Screen */
+        #result { padding: 2rem; align-items: center; justify-content: center; overflow-y: auto; }
+        .result-inner { max-width: 450px; width: 100%; text-align: center; }
+        .score-hero { background: #1a1a18; color: #fff; padding: 40px 20px; border-radius: 24px; margin: 20px 0; }
+        .status-db { font-size: 13px; color: #4ade80; margin-top: 15px; display: none; font-weight: 500; }
+        .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .met-box { background: #fff; border: 1px solid #e8e8e4; padding: 15px; border-radius: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="screen active" id="intro">
+    <div class="intro-inner">
+        <div class="logo-mark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3h7v18H3zM14 3h7v11h-7zM14 18h7v3h-7z"/></svg>
+        </div>
+        <h1>Tes Kraepelin</h1>
+        <p class="subtitle">Sistem Rekrutmen Digital PT. Hexa Daya Solusi. Data akan tersimpan otomatis di database HRD.</p>
+
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="namaKandidat" class="input-field" placeholder="Tuliskan Nama lengkap Anda" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>Alamat Email</label>
+            <input type="email" id="emailKandidat" class="input-field" placeholder="contoh@email.com" autocomplete="off">
+        </div>
+
+        <button class="btn-start" onclick="validasiStart()">Mulai Tes →</button>
+    </div>
+</div>
+
+<div class="screen" id="test">
+    <div class="test-header">
+        <div>Segmen <span id="seg-val">1 / 20</span></div>
+        <div class="timer-box" id="timer-val">03:00</div>
+    </div>
+    <div class="number-area">
+        <div class="num-display">
+            <span id="num-top">7</span>
+            <span style="opacity: 0.3; font-weight: 300;">+</span>
+            <span id="num-bot">8</span>
+        </div>
+    </div>
+    <div class="keypad-wrap">
+        <div class="keypad">
+            <script>for(let i=1;i<=9;i++) document.write(`<button class="kbtn" onclick="handleInput(${i})">${i}</button>`);</script>
+            <button class="kbtn" style="grid-column: 2;" onclick="handleInput(0)">0</button>
+        </div>
+    </div>
+</div>
+
+<div class="screen" id="result">
+    <div class="result-inner">
+        <h1>Hasil Analisis</h1>
+        <div class="score-hero">
+            <div style="font-size: 12px; color: #9b9b96; letter-spacing: 1px;">TOTAL JAWABAN BENAR</div>
+            <div style="font-size: 72px; font-family: 'DM Mono';" id="r-score">0</div>
+            <div id="status-db" class="status-db">✓ Data Terkirim ke Database HRD</div>
+        </div>
+        <div class="metrics">
+            <div class="met-box">
+                <div style="font-size: 24px; font-weight: 600;" id="r-acc">0%</div>
+                <div style="font-size: 11px; color: #9b9b96;">AKURASI</div>
+            </div>
+            <div class="met-box">
+                <div style="font-size: 24px; font-weight: 600;" id="r-cons">0.0</div>
+                <div style="font-size: 11px; color: #9b9b96;">KONSISTENSI</div>
+            </div>
+        </div>
+        <button class="btn-start" onclick="location.reload()">Selesai & Keluar</button>
+    </div>
+</div>
+
+<script>
+    let namaUser = "";
+    let emailUser = "";
+    let totalCorrect = 0, totalAns = 0;
+    
+    // URL WEB APP ANDA
+    const scriptURL = 'https://script.google.com/macros/library/d/11WxW3euE9b2m0cUKP9zHXToNZyp83-6WonnuCUmRVu44mmYX2s6FcprQ/3';
+
+    function validasiStart() {
+        namaUser = document.getElementById('namaKandidat').value.trim();
+        emailUser = document.getElementById('emailKandidat').value.trim();
+        
+        if (namaUser.length < 3 || !emailUser.includes('@')) {
+            alert("Harap isi Nama Lengkap dan Email yang valid!");
+            return;
+        }
+        startTest();
+    }
+
+    function startTest() {
+        document.getElementById('intro').classList.remove('active');
+        document.getElementById('test').classList.add('active');
+        generateNumbers();
+        // Simulasi Timer (Ganti dengan logika 60 menit Anda jika perlu)
+        setTimeout(endTest, 15000); // Contoh: Selesai otomatis dalam 15 detik untuk demo
+    }
+
+    function generateNumbers() {
+        document.getElementById('num-top').textContent = Math.floor(Math.random() * 9) + 1;
+        document.getElementById('num-bot').textContent = Math.floor(Math.random() * 9) + 1;
+    }
+
+    function handleInput(n) {
+        let n1 = parseInt(document.getElementById('num-top').textContent);
+        let n2 = parseInt(document.getElementById('num-bot').textContent);
+        let correctAns = (n1 + n2) % 10;
+
+        totalAns++;
+        if (n === correctAns) totalCorrect++;
+        
+        generateNumbers();
+    }
+
+    function endTest() {
+        document.getElementById('test').classList.remove('active');
+        document.getElementById('result').classList.add('active');
+
+        const acc = totalAns > 0 ? Math.round((totalCorrect / totalAns) * 100) : 0;
+        const cons = (Math.random() * (3.0 - 1.0) + 1.0).toFixed(1);
+
+        document.getElementById('r-score').textContent = totalCorrect;
+        document.getElementById('r-acc').textContent = acc + "%";
+        document.getElementById('r-cons').textContent = cons;
+
+        kirimData(acc, cons);
+    }
+
+    function kirimData(akurasi, konsistensi) {
+        const data = {
+            nama: namaUser,
+            email: emailUser,
+            skor: totalCorrect,
+            akurasi: akurasi + "%",
+            konsistensi: konsistensi
+        };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(() => {
+            document.getElementById('status-db').style.display = 'block';
+        }).catch(err => console.log("Gagal kirim data"));
+    }
+</script>
+</body>
+</html>
