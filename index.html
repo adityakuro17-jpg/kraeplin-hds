@@ -21,6 +21,7 @@
         /* KRAEPELIN VERTICAL UI */
         #test { background: #ffffff; }
         .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #2563eb; color: white; z-index: 10; }
+        .timer-box { background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 600; }
         
         .kraepelin-container {
             flex: 1;
@@ -29,66 +30,76 @@
             align-items: center;
             overflow: hidden;
             position: relative;
-            background: #f0f2f5;
+            background: #ffffff;
         }
 
-        /* Kolom Angka Vertikal */
         .number-column {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 0;
-            transition: transform 0.3s ease;
+            padding: 100px 0;
+            transition: transform 0.2s ease-out;
         }
 
-        .number-pair {
+        /* Layout Angka Vertikal & Kotak di Kanan */
+        .row-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px; /* Jarak antara angka dan kotak */
+            height: 100px; /* Tinggi per baris */
+            width: 200px;
+        }
+
+        .num-pair-stack {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 10px;
             font-family: 'DM Mono', monospace;
             font-weight: 600;
             font-size: 32px;
             color: #333;
+            line-height: 1;
         }
 
         .ans-box {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #ddd;
-            border-radius: 8px;
-            margin: 5px 0;
+            width: 55px;
+            height: 55px;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
+            background: #fdfdfd;
             color: #2563eb;
             font-size: 28px;
+            font-weight: 700;
             transition: all 0.2s;
         }
 
         .ans-box.active {
             border-color: #2563eb;
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
             background: #eef2ff;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
             transform: scale(1.1);
         }
 
         .ans-box.filled {
             border-color: #1a1a18;
-            background: #f8f8f6;
-            color: #555;
+            background: #f4f4f2;
+            color: #444;
         }
 
-        /* Keypad Tetap di Bawah */
-        .keypad-wrap { background: #1a1a18; padding: 20px 20px 30px; border-radius: 24px 24px 0 0; }
+        /* Keypad UI (Mobile) */
+        .keypad-wrap { background: #1a1a18; padding: 15px 15px 30px; border-radius: 24px 24px 0 0; }
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 400px; margin: 0 auto; }
-        .kbtn { background: #333; border: none; height: 60px; border-radius: 12px; color: #fff; font-size: 24px; font-weight: 600; cursor: pointer; }
+        .kbtn { background: #333; border: none; height: 55px; border-radius: 12px; color: #fff; font-size: 22px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .kbtn:active { background: #555; }
 
         /* Result */
         #result { padding: 2rem; align-items: center; justify-content: center; text-align: center; }
         .score-hero { background: #1a1a18; color: #fff; padding: 40px; border-radius: 24px; margin: 20px 0; width: 100%; max-width: 400px; }
+        .status-db { color: #4ade80; margin-top: 10px; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
@@ -96,21 +107,23 @@
 <div class="screen active" id="intro">
     <div class="inner-container">
         <img src="logo.png" alt="Logo" class="logo-banner">
-        <h1>Registrasi</h1>
+        <h1>Tes Kraepelin PT. Hexa Daya Solusi</h1>
+        <p class="subtitle">Harap isi data diri dengan benar.</p>
         <input type="text" id="namaKandidat" class="input-field" placeholder="Nama Lengkap">
-        <input type="email" id="emailKandidat" class="input-field" placeholder="Email Aktif">
+        <input type="email" id="emailKandidat" class="input-field" placeholder="Alamat Email">
         <button class="btn-action" onclick="showGuide()">Lanjut →</button>
     </div>
 </div>
 
 <div class="screen" id="guide">
     <div class="inner-container">
-        <h1>Instruksi Vertikal</h1>
-        <div style="text-align: left; margin: 20px 0; font-size: 14px;">
-            <p>1. Jumlahkan angka atas dan bawah.</p>
-            <p>2. Ketik angka satuan (digit terakhir).</p>
-            <p>3. Kotak biru adalah posisi Anda sekarang.</p>
-            <p>4. Ada 40 segmen, masing-masing 30 detik.</p>
+        <h1>Instruksi Tes</h1>
+        <div style="text-align: left; background: white; padding: 20px; border-radius: 16px; border: 1px solid #e8e8e4; margin: 20px 0;">
+            <p style="margin-bottom: 10px;">• Jumlahkan angka <b>Atas</b> dan <b>Bawah</b>.</p>
+            <p style="margin-bottom: 10px;">• Ketik <b>angka terakhir</b> hasil jumlah (Contoh: 9+6=15, ketik <b>5</b>).</p>
+            <p style="margin-bottom: 10px;">• Jawab di kotak <b>BIRU</b> di samping kanan angka.</p>
+            <p style="margin-bottom: 10px;">• Gunakan <b>Angka di Keyboard</b> atau <b>Keypad di Layar</b>.</p>
+            <p>• Total 40 segmen, masing-masing 30 detik.</p>
         </div>
         <button class="btn-action" onclick="startTest()">Mulai Tes →</button>
     </div>
@@ -123,8 +136,7 @@
     </div>
     
     <div class="kraepelin-container" id="container">
-        <div class="number-column" id="column">
-            </div>
+        <div class="number-column" id="column"></div>
     </div>
 
     <div class="keypad-wrap">
@@ -137,13 +149,13 @@
 
 <div class="screen" id="result">
     <div class="result-inner">
-        <h1>Hasil Tes</h1>
+        <h1>Selesai</h1>
         <div class="score-hero">
             <div style="font-size: 12px; opacity: 0.6;">TOTAL BENAR</div>
             <div style="font-size: 72px;" id="r-score">0</div>
-            <p id="status-db" style="color: #4ade80; display: none; margin-top: 10px;">✓ Data Berhasil Tersimpan</p>
+            <p id="status-db" class="status-db">✓ Data Tersimpan di Database HRD</p>
         </div>
-        <button class="btn-action" onclick="location.reload()">Selesai</button>
+        <button class="btn-action" onclick="location.reload()">Selesai & Keluar</button>
     </div>
 </div>
 
@@ -152,14 +164,23 @@
     let curSeg = 1, timeLeft = 30;
     let timerInterval;
     let currentIdx = 0;
-    const TOTAL_ROWS = 50; // Jumlah baris per segmen
+    const ROWS_PER_SEGMENT = 60;
     
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
+
+    // Support Keyboard Input
+    window.addEventListener('keydown', (e) => {
+        if (document.getElementById('test').classList.contains('active')) {
+            if (e.key >= '0' && e.key <= '9') {
+                handleInput(parseInt(e.key));
+            }
+        }
+    });
 
     function showGuide() {
         namaUser = document.getElementById('namaKandidat').value.trim();
         emailUser = document.getElementById('emailKandidat').value.trim();
-        if (namaUser.length < 3 || !emailUser.includes('@')) return alert("Isi data dengan benar!");
+        if (namaUser.length < 3 || !emailUser.includes('@')) return alert("Mohon lengkapi data!");
         document.getElementById('intro').classList.remove('active');
         document.getElementById('guide').classList.add('active');
     }
@@ -177,64 +198,63 @@
         column.innerHTML = '';
         column.style.transform = `translateY(0px)`;
         
-        // Generate angka pertama (paling atas)
         let topNum = Math.floor(Math.random() * 9) + 1;
         
-        for (let i = 0; i < TOTAL_ROWS; i++) {
+        for (let i = 0; i < ROWS_PER_SEGMENT; i++) {
             let botNum = Math.floor(Math.random() * 9) + 1;
             let correct = (topNum + botNum) % 10;
 
             const div = document.createElement('div');
-            div.className = 'number-pair';
+            div.className = 'row-item';
+            div.id = `row-${i}`;
             div.innerHTML = `
-                <div>${topNum}</div>
+                <div class="num-pair-stack">
+                    <div>${topNum}</div>
+                    <div style="height:10px"></div>
+                    <div>${botNum}</div>
+                </div>
                 <div class="ans-box" id="ans-${i}"></div>
-                <div>${botNum}</div>
             `;
             div.dataset.correct = correct;
             column.appendChild(div);
             
-            topNum = botNum; // Angka bawah menjadi angka atas di baris berikutnya
+            topNum = botNum;
         }
-        updateActiveBox();
+        updateActiveUI();
     }
 
-    function updateActiveBox() {
+    function updateActiveUI() {
         document.querySelectorAll('.ans-box').forEach(b => b.classList.remove('active'));
         const activeBox = document.getElementById(`ans-${currentIdx}`);
         if (activeBox) {
             activeBox.classList.add('active');
-            // Scroll otomatis agar kotak aktif selalu di tengah
+            // Center the active row
             const containerHeight = document.getElementById('container').offsetHeight;
-            const offset = (currentIdx * 120) - (containerHeight / 2) + 60;
+            const offset = (currentIdx * 100) - (containerHeight / 2) + 50;
             document.getElementById('column').style.transform = `translateY(-${offset > 0 ? offset : 0}px)`;
         }
     }
 
     function handleInput(n) {
-        const pairs = document.querySelectorAll('.number-pair');
-        if (currentIdx >= pairs.length) return;
+        const rows = document.querySelectorAll('.row-item');
+        if (currentIdx >= rows.length) return;
 
-        const correctAns = parseInt(pairs[currentIdx].dataset.correct);
+        const correctAns = parseInt(rows[currentIdx].dataset.correct);
         const box = document.getElementById(`ans-${currentIdx}`);
 
         totalAns++;
         if (n === correctAns) {
             totalCorrect++;
-            box.textContent = n;
-        } else {
-            box.textContent = n;
-            box.style.color = 'red';
         }
-
+        
+        box.textContent = n;
         box.classList.add('filled');
         currentIdx++;
         
-        if (currentIdx < TOTAL_ROWS) {
-            updateActiveBox();
+        if (currentIdx < ROWS_PER_SEGMENT) {
+            updateActiveUI();
         } else {
-            // Jika baris habis sebelum waktu selesai, generate lagi/segmen baru
-            setupSegment();
+            setupSegment(); // Auto refill if they finish early
         }
     }
 
