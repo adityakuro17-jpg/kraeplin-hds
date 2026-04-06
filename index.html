@@ -11,86 +11,82 @@
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: flex; flex-direction: column; }
         
-        /* Intro & Guide */
-        #intro, #guide { align-items: center; justify-content: center; padding: 2rem 1.5rem; overflow-y: auto; background: #f8f8f6; }
-        .inner-container { max-width: 450px; width: 100%; text-align: center; }
-        .logo-banner { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto 1.5rem; }
-        .input-field { width: 100%; padding: 16px; border: 1px solid #e8e8e4; border-radius: 12px; font-size: 16px; margin-bottom: 1rem; outline: none; }
-        .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; }
-
-        /* TEST UI */
-        .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; position: relative; }
+        /* Layout Header & Timer */
+        .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; }
         .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 700; font-size: 18px; }
-        
-        .kraepelin-container {
+
+        /* KRAEPELIN ZIG-ZAG ENGINE */
+        .kraepelin-view {
             flex: 1;
             display: flex;
             justify-content: center;
             overflow: hidden;
-            background: #ffffff;
             position: relative;
         }
 
-        .number-column {
+        .scroll-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 250px 0; 
+            padding-top: 300px; /* Start biar pas di tengah */
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 300px;
         }
 
-        /* Layout Row: Soal Kiri, Jawaban Kanan */
-        .row-item {
-            display: flex;
+        /* Styling per angka (Cell) */
+        .data-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Kiri Soal, Kanan Jawaban */
+            height: 90px; /* Jarak antar angka */
             align-items: center;
-            justify-content: center;
-            gap: 45px; 
-            height: 140px; /* Space lega sesuai gambar */
-            width: 350px;
-            position: relative;
         }
 
-        .num-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .soal-cell {
             font-family: 'DM Mono', monospace;
+            font-size: 60px;
             font-weight: 700;
-            font-size: 64px; /* Angka soal Gede */
+            text-align: center;
             color: #1a1a18;
-            line-height: 0.9;
         }
 
-        .ans-box {
+        .jawab-cell {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Kotak Jawaban Biru di Sela-Sela (Zig-Zag) */
+        .ans-input {
+            position: absolute;
+            top: 45px; /* Naruh kotak tepat di tengah antara dua baris angka */
             width: 75px;
             height: 75px;
             border: 4px solid #e2e8f0;
             border-radius: 16px;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff;
-            color: #2563eb;
-            font-size: 42px; 
+            font-size: 42px;
             font-weight: 700;
+            color: #2563eb;
+            z-index: 10;
             transition: all 0.2s;
-            margin-top: 5px; 
         }
 
-        .ans-box.active {
+        .ans-input.active {
             border-color: #2563eb;
             background: #f0f7ff;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
             transform: scale(1.1);
         }
 
-        .ans-box.filled {
+        .ans-input.filled {
             border-color: #1a1a18;
             background: #f8f8f6;
-            color: #333;
+            color: #444;
         }
 
-        /* KEYBOARD MELAYANG */
+        /* FLOATING KEYPAD */
         .floating-keypad {
             background: #1a1a18;
             padding: 15px 10px 30px;
@@ -111,50 +107,50 @@
             font-weight: 700;
             cursor: pointer;
         }
-
         .kbtn:active { background: #2563eb; }
 
-        /* Result */
-        #result { padding: 2rem; align-items: center; justify-content: center; text-align: center; }
-        .score-hero { background: #1a1a18; color: #fff; padding: 50px 20px; border-radius: 28px; margin: 25px 0; width: 100%; max-width: 400px; }
+        /* Intro & Result */
+        #intro, #guide, #result { align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow-y: auto; }
+        .inner { max-width: 450px; width: 100%; }
+        .logo-banner { width: 100%; max-width: 300px; margin-bottom: 2rem; }
+        .input-field { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 1rem; font-size: 16px; outline: none; }
+        .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="screen active" id="intro">
-    <div class="inner-container">
-        <img src="logo.png" alt="Logo" class="logo-banner">
+    <div class="inner">
+        <img src="logo.png" class="logo-banner">
         <h1>Tes Kraepelin</h1>
-        <p style="font-size: 18px; font-weight: 600; color: #1a1a18; margin-bottom: 10px;">PT. Hexa Daya Solusi</p>
-        <input type="text" id="namaKandidat" class="input-field" placeholder="Nama Lengkap">
-        <input type="email" id="emailKandidat" class="input-field" placeholder="Email Aktif">
-        <button class="btn-action" onclick="showGuide()">Lanjut →</button>
+        <p style="font-weight: 600; margin-bottom: 20px;">PT. Hexa Daya Solusi</p>
+        <input type="text" id="nama" class="input-field" placeholder="Nama Lengkap">
+        <input type="email" id="email" class="input-field" placeholder="Email">
+        <button class="btn-action" onclick="toGuide()">Lanjut →</button>
     </div>
 </div>
 
 <div class="screen" id="guide">
-    <div class="inner-container">
-        <h1>Instruksi Tes</h1>
-        <div style="text-align: left; background: white; padding: 25px; border-radius: 20px; border: 1px solid #e8e8e4; margin: 25px 0; font-size: 16px;">
-            <p style="margin-bottom: 10px;">• Angka muncul secara <b>Berantai Vertikal</b>.</p>
-            <p style="margin-bottom: 10px;">• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawahnya</b>.</p>
-            <p style="margin-bottom: 10px;">• Jawab pada <b>Kotak Samping Kanan</b> soal.</p>
-            <p>• Ketik <b>digit terakhir</b> saja (Contoh: 9+6=15, ketik 5).</p>
+    <div class="inner">
+        <h1>Instruksi Berantai</h1>
+        <div style="text-align: left; margin: 25px 0; font-size: 16px; line-height: 1.6;">
+            <p>1. Angka soal ada di <b>Kolom Kiri</b>.</p>
+            <p>2. Jumlahkan angka saat ini dengan bawahnya.</p>
+            <p>3. Jawab di <b>Kotak Biru</b> di sebelah kanan (Zig-zag).</p>
+            <p>4. Masukkan angka satuan saja (Contoh 9+8=17, isi 7).</p>
         </div>
-        <button class="btn-action" onclick="startTest()">Mulai Tes →</button>
+        <button class="btn-action" onclick="startTest()">Mulai Sekarang →</button>
     </div>
 </div>
 
 <div class="screen" id="test">
     <div class="test-header">
-        <div style="font-weight: 600;">Segmen <span id="seg-val">1 / 40</span></div>
+        <div>Segmen <span id="seg-val">1 / 40</span></div>
         <div class="timer-box" id="timer-display">00:30</div>
     </div>
-    
-    <div class="kraepelin-container" id="container">
-        <div class="number-column" id="column"></div>
+    <div class="kraepelin-view">
+        <div class="scroll-container" id="scroll-content"></div>
     </div>
-
     <div class="floating-keypad">
         <script>for(let i=1;i<=9;i++) document.write(`<button class="kbtn" onclick="handleInput(${i})">${i}</button>`);</script>
         <button class="kbtn" onclick="handleInput(0)">0</button>
@@ -162,13 +158,12 @@
 </div>
 
 <div class="screen" id="result">
-    <div class="result-inner">
+    <div class="inner">
         <h1>Tes Selesai</h1>
-        <p style="font-weight: 600; margin-top: 5px;">PT. Hexa Daya Solusi</p>
-        <div class="score-hero">
-            <div style="font-size: 14px; opacity: 0.7;">TOTAL JAWABAN BENAR</div>
+        <div style="background: #1a1a18; color: #fff; padding: 50px; border-radius: 24px; margin: 20px 0;">
+            <div style="font-size: 14px; opacity: 0.6;">SKOR BENAR</div>
             <div style="font-size: 84px; font-weight: 700;" id="r-score">0</div>
-            <p id="status-db" style="color: #4ade80; display: none; margin-top: 15px; font-weight: 600;">✓ Data Berhasil Tersimpan</p>
+            <p id="status-db" style="color: #4ade80; display: none; margin-top: 10px;">✓ Data Tersimpan</p>
         </div>
         <button class="btn-action" onclick="location.reload()">Selesai</button>
     </div>
@@ -177,20 +172,18 @@
 <script>
     let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
     let curSeg = 1, timeLeft = 30, currentIdx = 0;
-    let timerInterval;
+    let timerInterval, pool = [];
     const ROWS_PER_SEGMENT = 100;
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
 
     window.addEventListener('keydown', (e) => {
-        if (document.getElementById('test').classList.contains('active')) {
-            if (e.key >= '0' && e.key <= '9') handleInput(parseInt(e.key));
-        }
+        if (e.key >= '0' && e.key <= '9') handleInput(parseInt(e.key));
     });
 
-    function showGuide() {
-        namaUser = document.getElementById('namaKandidat').value.trim();
-        emailUser = document.getElementById('emailKandidat').value.trim();
-        if (namaUser.length < 3 || !emailUser.includes('@')) return alert("Lengkapi data!");
+    function toGuide() {
+        namaUser = document.getElementById('nama').value;
+        emailUser = document.getElementById('email').value;
+        if (!namaUser || !emailUser) return alert("Isi data dulu!");
         document.getElementById('intro').classList.remove('active');
         document.getElementById('guide').classList.add('active');
     }
@@ -204,45 +197,65 @@
 
     function setupSegment() {
         currentIdx = 0;
-        const column = document.getElementById('column');
-        column.innerHTML = '';
-        column.style.transform = `translateY(0px)`;
+        const container = document.getElementById('scroll-content');
+        container.innerHTML = '';
+        container.style.transform = `translateY(0px)`;
         
-        let pool = [];
+        pool = [];
         for(let i=0; i <= ROWS_PER_SEGMENT; i++) pool.push(Math.floor(Math.random() * 9) + 1);
-        
+
         for (let i = 0; i < ROWS_PER_SEGMENT; i++) {
-            let top = pool[i];
-            let bot = pool[i+1];
-            const div = document.createElement('div');
-            div.className = 'row-item';
-            div.innerHTML = `<div class="num-stack"><div>${top}</div><div style="height:35px"></div><div>${bot}</div></div><div class="ans-box" id="ans-${i}"></div>`;
-            div.dataset.correct = (top + bot) % 10;
-            column.appendChild(div);
+            const row = document.createElement('div');
+            row.className = 'data-row';
+            
+            // Kolom Kiri: Angka Soal
+            const cellSoal = document.createElement('div');
+            cellSoal.className = 'soal-cell';
+            cellSoal.textContent = pool[i];
+
+            // Kolom Kanan: Kotak Jawaban (Zig-zag)
+            const cellJawab = document.createElement('div');
+            cellJawab.className = 'jawab-cell';
+            
+            // Kotak jawaban diletakkan di sela-sela angka (i & i+1)
+            if (i < ROWS_PER_SEGMENT - 1) {
+                const ansBox = document.createElement('div');
+                ansBox.className = 'ans-input';
+                ansBox.id = `ans-${i}`;
+                cellJawab.appendChild(ansBox);
+            }
+
+            row.appendChild(cellSoal);
+            row.appendChild(cellJawab);
+            container.appendChild(row);
         }
         updateActiveUI();
     }
 
     function updateActiveUI() {
-        document.querySelectorAll('.ans-box').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.ans-input').forEach(b => b.classList.remove('active'));
         const activeBox = document.getElementById(`ans-${currentIdx}`);
         if (activeBox) {
             activeBox.classList.add('active');
-            const offset = (currentIdx * 140);
-            document.getElementById('column').style.transform = `translateY(-${offset}px)`;
+            // Scroll kamera biar kotak biru stay di tengah
+            const offset = (currentIdx * 90);
+            document.getElementById('scroll-content').style.transform = `translateY(-${offset}px)`;
         }
     }
 
     function handleInput(n) {
-        const rows = document.querySelectorAll('.row-item');
-        if (currentIdx >= rows.length) return;
-        const correctAns = parseInt(rows[currentIdx].dataset.correct);
+        if (!document.getElementById('test').classList.contains('active')) return;
+        const correct = (pool[currentIdx] + pool[currentIdx+1]) % 10;
         const box = document.getElementById(`ans-${currentIdx}`);
+
         totalAns++;
-        if (n === correctAns) totalCorrect++;
-        box.textContent = n; box.classList.add('filled');
+        if (n === correct) totalCorrect++;
+        box.textContent = n;
+        box.classList.add('filled');
+        
         currentIdx++;
-        if (currentIdx < ROWS_PER_SEGMENT) updateActiveUI(); else setupSegment();
+        if (currentIdx < ROWS_PER_SEGMENT - 1) updateActiveUI();
+        else setupSegment();
     }
 
     function startTimer() {
@@ -250,18 +263,22 @@
             timeLeft--;
             document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
             if (timeLeft <= 0) {
-                if (curSeg < 40) { curSeg++; timeLeft = 30; document.getElementById('seg-val').textContent = curSeg + " / 40"; setupSegment(); }
-                else endTest();
+                if (curSeg < 40) {
+                    curSeg++; timeLeft = 30;
+                    document.getElementById('seg-val').textContent = curSeg + " / 40";
+                    setupSegment();
+                } else finish();
             }
         }, 1000);
     }
 
-    function endTest() {
+    function finish() {
         clearInterval(timerInterval);
         document.getElementById('test').classList.remove('active');
         document.getElementById('result').classList.add('active');
         document.getElementById('r-score').textContent = totalCorrect;
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect, akurasi: Math.round((totalCorrect/totalAns)*100)+"%" }) }).then(() => { document.getElementById('status-db').style.display = 'block'; });
+        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect }) })
+        .then(() => { document.getElementById('status-db').style.display = 'block'; });
     }
 </script>
 </body>
