@@ -146,7 +146,7 @@
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzNgCoDDdCYLEbjb7FciyhWBTWjxfgnI4j-fRG4nBYHeqYK5HAOLIzJt6bQ-vtDt0d5NA/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw5QKWwJB6z4o-M0gfnYM9428DTw5Px_SKLZc3JN1SRcd3B03ZzVmDOgSL3bQo9vxAjCA/exec';
 
     let namaUser, emailUser;
     let totalCorrect = 0, totalAns = 0;
@@ -336,10 +336,7 @@
 
         fetch(scriptURL, {
     method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
+    body: new URLSearchParams(payload)
 })
 .then(res => res.text())
 .then(res => {
