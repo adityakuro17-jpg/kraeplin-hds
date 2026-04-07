@@ -22,65 +22,56 @@
         /* VIEWPORT UTAMA */
         .kraepelin-view { flex: 1; display: flex; justify-content: center; overflow: hidden; background: #ffffff; }
 
-        /* KONTINER SOAL CONTINUOUS */
-        .scroll-container { 
-            display: flex; 
-            flex-direction: column; 
-            padding-top: 40vh; /* Agar soal mulai dari tengah layar */
-            transition: transform 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
-            width: 280px; 
-        }
+       /* AREA JAWABAN: Ditempatkan di tengah-tengah antara angka soal dan kanan */
+.ans-zone {
+    position: absolute;
+    /* Geser ke kiri sedikit agar berada di tengah ruang kosong */
+    right: 35px; 
+    top: 30px; /* Tepat di celah antara dua angka (60px / 2) */
+    display: flex;
+    align-items: center;
+    /* Jarak antara tanda + dan kotak jawaban diperlebar agar tidak menempel */
+    gap: 20px; 
+    z-index: 5;
+}
 
-        /* BARIS SOAL: Berisi satu angka */
-        .num-row {
-            height: 60px; /* Jarak antar angka */
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 40px;
-            font-family: 'DM Mono', monospace;
-            font-size: 52px;
-            font-weight: 700;
-            color: #1a1a18;
-            position: relative;
-        }
+.plus-sign {
+    /* Ukuran diperbesar 1pt (dari 24px ke ~25.3px atau langsung 26px agar tegas) */
+    font-size: 26px; 
+    font-weight: 700;
+    color: #cbd5e1;
+    user-select: none;
+    /* Memberikan ruang agar tanda + benar-benar di tengah soal dan jawaban */
+    margin-right: 5px; 
+}
 
-        /* AREA JAWABAN: Ditempatkan ABSOLUTE di celah antara dua baris angka */
-        .ans-zone {
-            position: absolute;
-            right: 20px;
-            top: 30px; /* Menempatkan di tengah-tengah (60px / 2) */
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 5;
-        }
+.ans-input { 
+    width: 65px; 
+    height: 65px; 
+    border: 3px solid #e2e8f0; 
+    border-radius: 16px; 
+    background: #fff; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 36px; 
+    font-weight: 700; 
+    color: #2563eb;
+    transition: 0.2s;
+}
 
-        .plus-sign {
-            font-size: 24px;
-            font-weight: 600;
-            color: #cbd5e1;
-            user-select: none;
-        }
+.ans-input.active { 
+    border-color: #2563eb; 
+    background: #f0f7ff; 
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.15); 
+    transform: scale(1.05); 
+}
 
-        .ans-input { 
-            width: 65px; 
-            height: 65px; 
-            border: 3px solid #e2e8f0; 
-            border-radius: 16px; 
-            background: #fff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 36px; 
-            font-weight: 700; 
-            color: #2563eb;
-            transition: 0.2s;
-        }
-
-        .ans-input.active { border-color: #2563eb; background: #f0f7ff; box-shadow: 0 0 15px rgba(37, 99, 235, 0.15); transform: scale(1.05); }
-        .ans-input.filled { border-color: #1a1a18; background: #f8f8f6; color: #444; }
-
+.ans-input.filled { 
+    border-color: #1a1a18; 
+    background: #f8f8f6; 
+    color: #444; 
+}
         /* KEYPAD */
         .floating-keypad { background: #1a1a18; padding: 15px 10px 30px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; z-index: 100; }
         .kbtn { background: #334155; border: none; height: 55px; border-radius: 12px; color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; }
