@@ -11,7 +11,6 @@
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: flex; flex-direction: column; }
         
-        /* Intro & Guide */
         #intro, #guide, #result { align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow-y: auto; }
         .inner { max-width: 420px; width: 100%; }
         .logo-banner { width: 100%; max-width: 280px; margin-bottom: 20px; }
@@ -20,80 +19,24 @@
         .input-field { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
         .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; }
 
-        /* TEST UI */
         .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; }
         .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 700; font-size: 18px; }
 
-        .kraepelin-view {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            overflow: hidden;
-            background: #ffffff;
-        }
+        .kraepelin-view { flex: 1; display: flex; justify-content: center; overflow: hidden; background: #ffffff; }
+        .scroll-container { display: flex; flex-direction: column; padding-top: 250px; transition: transform 0.2s ease-out; width: 260px; }
 
-        .scroll-container {
-            display: flex;
-            flex-direction: column;
-            padding-top: 250px; 
-            transition: transform 0.2s ease-out;
-            width: 260px;
-        }
-
-        .data-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            height: 90px; /* Jarak rapat */
-            position: relative;
-        }
-
-        .soal-cell {
-            font-family: 'DM Mono', monospace;
-            font-size: 64px;
-            font-weight: 700;
-            width: 80px;
-            text-align: center;
-        }
-
-        .ans-wrapper {
-            width: 100px;
-            position: relative;
-        }
-
-        .ans-input {
-            position: absolute;
-            top: 45px; /* Pas di sela-sela angka */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 75px;
-            height: 75px;
-            border: 4px solid #e2e8f0;
-            border-radius: 18px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            font-weight: 700;
-            color: #2563eb;
-            z-index: 10;
-        }
-
+        .data-row { display: flex; align-items: flex-start; justify-content: space-between; height: 90px; position: relative; }
+        .soal-cell { font-family: 'DM Mono', monospace; font-size: 64px; font-weight: 700; width: 80px; text-align: center; }
+        .ans-wrapper { width: 100px; position: relative; }
+        .ans-input { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; border: 4px solid #e2e8f0; border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 700; color: #2563eb; z-index: 10; }
         .ans-input.active { border-color: #2563eb; background: #f0f7ff; box-shadow: 0 0 15px rgba(37, 99, 235, 0.2); }
         .ans-input.filled { border-color: #1a1a18; background: #f8f8f6; color: #444; }
 
-        /* KEYBOARD */
-        .floating-keypad {
-            background: #1a1a18;
-            padding: 15px 10px 30px;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            z-index: 100;
-        }
+        .floating-keypad { background: #1a1a18; padding: 15px 10px 30px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; z-index: 100; }
         .kbtn { background: #334155; border: none; height: 60px; border-radius: 12px; color: #fff; font-size: 24px; font-weight: 700; cursor: pointer; }
         .kbtn:active { background: #2563eb; }
+
+        .status-msg { font-size: 14px; margin-top: 15px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -102,9 +45,7 @@
     <div class="inner">
         <img src="logo.png" class="logo-banner">
         <h1>Tes Kraepelin</h1>
-</p>
         <p style="font-weight: 600; margin-bottom: 20px; color:#6b6b66">PT. Hexa Daya Solusi</p>
-        
         <div class="input-group">
             <label>Nama Lengkap</label>
             <input type="text" id="namaKandidat" class="input-field" placeholder="Nama lengkap">
@@ -113,7 +54,6 @@
             <label>Alamat Email</label>
             <input type="email" id="emailKandidat" class="input-field" placeholder="contoh@email.com">
         </div>
-        
         <button class="btn-action" onclick="toGuide()">Lanjut ke Panduan →</button>
     </div>
 </div>
@@ -124,7 +64,6 @@
         <div style="text-align: left; background: #f8f8f6; padding: 20px; border-radius: 16px; margin: 20px 0; font-size: 15px; line-height: 1.5;">
             <p>• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawahnya</b>.</p>
             <p>• Masukkan <b>Digit Terakhir</b> (Contoh: 8+7=15, ketik 5).</p>
-            <p>• Kotak jawaban ada di tengah kanan angka.</p>
             <p>• Total 40 segmen, masing-masing 30 detik.</p>
         </div>
         <button class="btn-action" onclick="startTest()">Mulai Tes Sekarang →</button>
@@ -151,16 +90,22 @@
         <div style="background: #1a1a18; color: #fff; padding: 50px; border-radius: 28px; margin: 20px 0;">
             <div style="font-size: 12px; opacity: 0.6; margin-bottom: 10px;">TOTAL BENAR</div>
             <div style="font-size: 84px; font-weight: 700;" id="r-score">0</div>
-            <p id="status-db" style="color: #4ade80; display: none; margin-top: 15px; font-size: 14px;">✓ Data Berhasil Tersimpan</p>
+            <p id="status-db" class="status-msg" style="color: #4ade80; display: none;">✓ Data Berhasil Tersimpan</p>
         </div>
         <button class="btn-action" onclick="location.reload()">Selesai & Keluar</button>
     </div>
 </div>
 
 <script>
-    let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
-    let curSeg = 1, timeLeft = 30, currentIdx = 0, pool = [];
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
+
+    let namaUser, emailUser;
+    let totalCorrect = 0, totalAns = 0;
+    let curSeg = 1, timeLeft = 30, currentIdx = 0, pool = [];
+    
+    // Tracking Data untuk 4 Aspek
+    let segData = [];
+    let segDikerjakan = 0, segBenar = 0;
 
     window.addEventListener('keydown', (e) => {
         if (document.getElementById('test').classList.contains('active')) {
@@ -185,10 +130,12 @@
 
     function setupSegment() {
         currentIdx = 0;
+        segDikerjakan = 0;
+        segBenar = 0;
         const container = document.getElementById('scroll-content');
         container.innerHTML = '';
         pool = [];
-        for(let i=0; i <= 70; i++) pool.push(Math.floor(Math.random() * 9) + 1);
+        for (let i = 0; i <= 70; i++) pool.push(Math.floor(Math.random() * 9) + 1);
 
         for (let i = 0; i < 65; i++) {
             const row = document.createElement('div');
@@ -204,23 +151,34 @@
         const activeBox = document.getElementById(`ans-${currentIdx}`);
         if (activeBox) {
             activeBox.classList.add('active');
-            const offset = (currentIdx * 90); // 90 is row height
+            const offset = currentIdx * 90;
             document.getElementById('scroll-content').style.transform = `translateY(-${offset}px)`;
         }
     }
 
     function handleInput(n) {
-        const correct = (pool[currentIdx] + pool[currentIdx+1]) % 10;
-        if (n === correct) totalCorrect++;
+        const correct = (pool[currentIdx] + pool[currentIdx + 1]) % 10;
+        const isBenar = (n === correct);
+
+        if (isBenar) { totalCorrect++; segBenar++; }
         totalAns++;
-        
+        segDikerjakan++;
+
         const box = document.getElementById(`ans-${currentIdx}`);
         box.textContent = n;
         box.classList.add('filled');
-        
+
         currentIdx++;
-        if (currentIdx < 64) updateActiveUI();
-        else setupSegment();
+        if (currentIdx < 64) {
+            updateActiveUI();
+        } else {
+            saveSegment();
+            setupSegment();
+        }
+    }
+
+    function saveSegment() {
+        segData.push({ dikerjakan: segDikerjakan, benar: segBenar });
     }
 
     function startTimer() {
@@ -229,8 +187,10 @@
                 timeLeft--;
                 document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
             } else {
+                saveSegment();
                 if (curSeg < 40) {
-                    curSeg++; timeLeft = 30;
+                    curSeg++;
+                    timeLeft = 30;
                     document.getElementById('seg-val').textContent = curSeg + " / 40";
                     setupSegment();
                 } else {
@@ -241,16 +201,66 @@
         }, 1000);
     }
 
+    function hitungAspek() {
+        const n = segData.length;
+        const dikerjakanArr = segData.map(d => d.dikerjakan);
+        const totalDikerjakan = dikerjakanArr.reduce((a, b) => a + b, 0);
+        
+        // 1. Kecepatan (Rata-rata lajur)
+        const avgDikerjakan = totalDikerjakan / n;
+        const kecepatan = Math.min(100, Math.max(0, (avgDikerjakan - 10) / 40 * 100));
+
+        // 2. Ketelitian (% Benar)
+        const ketelitian = totalDikerjakan > 0 ? (totalCorrect / totalDikerjakan) * 100 : 0;
+
+        // 3. Keajegan (Stabilitas - CV Method)
+        const mean = avgDikerjakan;
+        const sd = Math.sqrt(dikerjakanArr.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
+        const cv = mean > 0 ? (sd / mean) * 100 : 100;
+        const keajegan = Math.max(0, 100 - cv);
+
+        // 4. Ketahanan (Perbandingan Paruh Waktu)
+        const half = Math.floor(n / 2);
+        const avg1 = dikerjakanArr.slice(0, half).reduce((a, b) => a + b, 0) / half;
+        const avg2 = dikerjakanArr.slice(half).reduce((a, b) => a + b, 0) / (n - half);
+        const drop = avg1 > 0 ? Math.max(0, (avg1 - avg2) / avg1) * 100 : 0;
+        const ketahanan = Math.max(0, 100 - (drop * 2));
+
+        return {
+            kecepatan: Math.round(kecepatan),
+            ketelitian: Math.round(ketelitian),
+            keajegan: Math.round(keajegan),
+            ketahanan: Math.round(ketahanan),
+            totalDikerjakan
+        };
+    }
+
     function endTest() {
         document.getElementById('test').classList.remove('active');
         document.getElementById('result').classList.add('active');
         document.getElementById('r-score').textContent = totalCorrect;
-        const acc = Math.round((totalCorrect/totalAns)*100);
-        
+
+        const hasil = hitungAspek();
+        const payload = {
+            nama: namaUser,
+            email: emailUser,
+            timestamp: new Date().toISOString(),
+            total_benar: totalCorrect,
+            total_dikerjakan: hasil.totalDikerjakan,
+            akurasi: hasil.ketelitian + "%",
+            kecepatan_score: hasil.kecepatan,
+            ketelitian_score: hasil.ketelitian,
+            keajegan_score: hasil.keajegan,
+            ketahanan_score: hasil.ketahanan
+        };
+
         fetch(scriptURL, { 
-            method: 'POST', mode: 'no-cors', 
-            body: JSON.stringify({ nama: namaUser, email: emailUser, skor: totalCorrect, akurasi: acc + "%" }) 
-        }).then(() => { document.getElementById('status-db').style.display = 'block'; });
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify(payload) 
+        }).then(() => { 
+            document.getElementById('status-db').style.display = 'block'; 
+        });
     }
 </script>
 </body>
