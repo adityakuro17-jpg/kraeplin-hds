@@ -6,6 +6,35 @@
     <title>Tes Kraepelin - Hexa Daya Solusi</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=DM+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
+        <div class="screen active" id="intro">
+    <div class="inner">
+        <img src="logo.png" class="logo-banner" alt="Logo Hexa">
+        
+        <h1 style="margin-bottom: 5px;">Tes Kraepelin</h1>
+        <p style="font-weight: 600; margin-bottom: 30px; color:#6b6b66">PT. Hexa Daya Solusi</p>
+        
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="namaKandidat" class="input-field" placeholder="Nama sesuai KTP">
+        </div>
+
+        <div class="input-group">
+            <label>Alamat Email</label>
+            <input type="email" id="emailKandidat" class="input-field" placeholder="contoh@email.com">
+        </div>
+
+        <div class="input-group">
+            <label>Posisi Dilamar</label>
+            <input type="text" id="posisiKandidat" class="input-field" placeholder="Misal: Staff Admin">
+        </div>
+        
+        <button class="btn-action" onclick="toGuide()">Lanjut ke Panduan →</button>
+        
+        <p style="font-size:11px; color:#9b9b96; margin-top:20px; line-height:1.4">
+            Pastikan koneksi stabil dan gunakan perangkat dengan layar yang memadai.
+        </p>
+    </div>
+</div>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: #ffffff; color: #1a1a18; overflow: hidden; }
         .screen { display: none; min-height: 100vh; }
