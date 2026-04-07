@@ -27,6 +27,7 @@
 
         .data-row { display: flex; align-items: flex-start; justify-content: space-between; height: 90px; position: relative; }
         .soal-cell { font-family: 'DM Mono', monospace; font-size: 64px; font-weight: 700; width: 80px; text-align: center; }
+        .plus-sign { font-family: "DM Mono", monospace; font-size: 26px; font-weight: 700; color: #cbd5e1; width: 24px; text-align: center; position: relative; top: 68px; flex-shrink: 0; }
         .ans-wrapper { width: 100px; position: relative; }
         .ans-input { position: absolute; top: 45px; left: 50%; transform: translateX(-50%); width: 75px; height: 75px; border: 4px solid #e2e8f0; border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 700; color: #2563eb; z-index: 10; }
         .ans-input.active { border-color: #2563eb; background: #f0f7ff; box-shadow: 0 0 15px rgba(37, 99, 235, 0.2); }
@@ -74,7 +75,7 @@
             <p>• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawahnya</b>.</p>
             <p>• Masukkan <b>Digit Terakhir</b> (Contoh: 8+7=15, ketik 5).</p>
             <p>• Kotak jawaban ada di tengah kanan angka.</p>
-            <p>• Total 40 segmen, masing-masing 30 detik.</p>
+            <p>• Total 40 lajur (segmen), masing-masing 30 detik.</p>
         </div>
         <button class="btn-action" onclick="startTest()">Mulai Tes Sekarang →</button>
     </div>
@@ -150,9 +151,8 @@
     let namaUser, emailUser;
     let totalCorrect = 0, totalAns = 0;
     let curSeg = 1, timeLeft = 30, currentIdx = 0, pool = [];
+    let timerInterval;
 
-    // === SCORING DATA: track per segmen ===
-    // segData[i] = { dikerjakan: N, benar: N }
     let segData = [];
     let segDikerjakan = 0, segBenar = 0;
 
@@ -189,7 +189,7 @@
         for (let i = 0; i < 65; i++) {
             const row = document.createElement('div');
             row.className = 'data-row';
-            row.innerHTML = `<div class="soal-cell">${pool[i]}</div><div class="ans-wrapper">${i < 64 ? `<div class="ans-input" id="ans-${i}"></div>` : ''}</div>`;
+            row.innerHTML = `<div class="soal-cell">${pool[i]}</div><div class="plus-sign">+</div><div class="ans-wrapper">${i < 64 ? `<div class="ans-input" id="ans-${i}"></div>` : ''}</div>`;
             container.appendChild(row);
         }
         updateActiveUI();
@@ -214,16 +214,17 @@
         segDikerjakan++;
 
         const box = document.getElementById(`ans-${currentIdx}`);
-        box.textContent = n;
-        box.classList.add('filled');
+        if(box) {
+            box.textContent = n;
+            box.classList.add('filled');
+        }
 
         currentIdx++;
         if (currentIdx < 64) {
             updateActiveUI();
         } else {
-            // Kolom penuh sebelum waktu habis — simpan segmen lalu reset
-            saveSegment();
-            setupSegment();
+            // JIKA LAJUR PENUH: Paksa timer jadi 0 agar masuk logika perpindahan di startTimer
+            timeLeft = 0; 
         }
     }
 
@@ -232,68 +233,57 @@
     }
 
     function startTimer() {
-        const timer = setInterval(() => {
+        timerInterval = setInterval(() => {
             if (timeLeft > 0) {
                 timeLeft--;
                 document.getElementById('timer-display').textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
             } else {
-                // Waktu habis: simpan segmen saat ini
-                saveSegment();
+                // Selesai satu lajur/segmen
+                saveSegment(); 
+                
                 if (curSeg < 40) {
                     curSeg++;
-                    timeLeft = 30;
+                    timeLeft = 30; // Reset timer ke 30 detik
                     document.getElementById('seg-val').textContent = curSeg + " / 40";
-                    setupSegment();
+                    document.getElementById('timer-display').textContent = "00:30";
+                    setupSegment(); // Ganti ke lajur berikutnya
                 } else {
-                    clearInterval(timer);
+                    clearInterval(timerInterval);
                     endTest();
                 }
             }
         }, 1000);
     }
 
-    // ============================================================
-    // SCORING 4 ASPEK
-    // ============================================================
     function hitungAspek(data) {
         const n = data.length;
         if (n === 0) return { kecepatan: 0, ketelitian: 0, keajegan: 0, ketahanan: 0 };
-
         const dikerjakanArr = data.map(d => d.dikerjakan);
-        const benarArr      = data.map(d => d.benar);
-
-        // 1. KECEPATAN — rata-rata soal dikerjakan per segmen
+        const benarArr = data.map(d => d.benar);
         const totalDikerjakan = dikerjakanArr.reduce((a, b) => a + b, 0);
-        const avgDikerjakan   = totalDikerjakan / n;
-        // Normalisasi: 10 soal/seg = 0, 60 soal/seg = 100
-        const kecepatanScore  = Math.min(100, Math.max(0, (avgDikerjakan - 10) / 50 * 100));
-
-        // 2. KETELITIAN — % benar dari yang dikerjakan
-        const totalBenar      = benarArr.reduce((a, b) => a + b, 0);
+        const avgDikerjakan = totalDikerjakan / n;
+        const kecepatanScore = Math.min(100, Math.max(0, (avgDikerjakan - 10) / 50 * 100));
+        const totalBenar = benarArr.reduce((a, b) => a + b, 0);
         const ketelitianScore = totalDikerjakan > 0 ? (totalBenar / totalDikerjakan) * 100 : 0;
-
-        // 3. KEAJEGAN — konsistensi (100 - koefisien variasi)
         const mean = avgDikerjakan;
-        const sd   = Math.sqrt(dikerjakanArr.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
-        const cv   = mean > 0 ? (sd / mean) * 100 : 100;
+        const sd = Math.sqrt(dikerjakanArr.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
+        const cv = mean > 0 ? (sd / mean) * 100 : 100;
         const keajegan = Math.max(0, 100 - cv);
-
-        // 4. KETAHANAN KERJA — bandingkan paruh pertama vs paruh kedua
-        const half  = Math.floor(n / 2);
-        const avg1  = dikerjakanArr.slice(0, half).reduce((a, b) => a + b, 0) / half;
-        const avg2  = dikerjakanArr.slice(half).reduce((a, b) => a + b, 0) / (n - half);
-        const drop  = avg1 > 0 ? Math.max(0, (avg1 - avg2) / avg1) * 100 : 0;
+        const half = Math.floor(n / 2);
+        const avg1 = dikerjakanArr.slice(0, half).reduce((a, b) => a + b, 0) / half;
+        const avg2 = dikerjakanArr.slice(half).reduce((a, b) => a + b, 0) / (n - half);
+        const drop = avg1 > 0 ? Math.max(0, (avg1 - avg2) / avg1) * 100 : 0;
         const ketahanan = Math.max(0, 100 - drop * 1.5);
 
         return {
-            kecepatan:  Math.round(kecepatanScore),
+            kecepatan: Math.round(kecepatanScore),
             ketelitian: Math.round(ketelitianScore),
-            keajegan:   Math.round(keajegan),
-            ketahanan:  Math.round(ketahanan),
+            keajegan: Math.round(keajegan),
+            ketahanan: Math.round(ketahanan),
             avgDikerjakan: Math.round(avgDikerjakan * 10) / 10,
-            sd:         Math.round(sd * 10) / 10,
-            avg1:       Math.round(avg1 * 10) / 10,
-            avg2:       Math.round(avg2 * 10) / 10,
+            sd: Math.round(sd * 10) / 10,
+            avg1: Math.round(avg1 * 10) / 10,
+            avg2: Math.round(avg2 * 10) / 10,
             totalDikerjakan, totalBenar
         };
     }
@@ -304,70 +294,50 @@
         return { label: 'Rendah', cls: 'cat-rendah' };
     }
 
-    // ============================================================
-    // END TEST
-    // ============================================================
     function endTest() {
         document.getElementById('test').classList.remove('active');
         document.getElementById('result').classList.add('active');
-
-        const acc   = totalAns > 0 ? Math.round((totalCorrect / totalAns) * 100) : 0;
+        const acc = totalAns > 0 ? Math.round((totalCorrect / totalAns) * 100) : 0;
         const aspek = hitungAspek(segData);
-
-        // Tampilkan di UI
-        document.getElementById('r-score').textContent   = totalCorrect;
+        document.getElementById('r-score').textContent = totalCorrect;
         document.getElementById('r-akurasi').textContent = acc + '%';
-
         const fields = ['kecepatan', 'ketelitian', 'keajegan', 'ketahanan'];
         fields.forEach(f => {
             document.getElementById(`r-${f}`).textContent = aspek[f] + '/100';
             const k = katLabel(aspek[f]);
             const el = document.getElementById(`r-${f}-cat`);
             el.textContent = k.label;
-            el.className   = 'aspek-cat ' + k.cls;
+            el.className = 'aspek-cat ' + k.cls;
         });
 
-        // Kirim ke Google Sheets
-        // Payload: identitas + 4 aspek agregat + detail per segmen
         const segDetail = {};
         segData.forEach((d, i) => {
             segDetail[`seg${i + 1}_dikerjakan`] = d.dikerjakan;
-            segDetail[`seg${i + 1}_benar`]      = d.benar;
+            segDetail[`seg${i + 1}_benar`] = d.benar;
         });
 
         const payload = {
-            // Identitas
-            nama:        namaUser,
-            email:       emailUser,
-            timestamp:   new Date().toISOString(),
-
-            // Ringkasan
-            total_benar:      totalCorrect,
+            nama: namaUser,
+            email: emailUser,
+            timestamp: new Date().toISOString(),
+            total_benar: totalCorrect,
             total_dikerjakan: aspek.totalDikerjakan,
-            akurasi:          acc + '%',
-
-            // 4 Aspek (skor 0-100)
-            kecepatan_score:  aspek.kecepatan,
+            akurasi: acc + '%',
+            kecepatan_score: aspek.kecepatan,
             ketelitian_score: aspek.ketelitian,
-            keajegan_score:   aspek.keajegan,
-            ketahanan_score:  aspek.ketahanan,
-
-            // Nilai mentah aspek
+            keajegan_score: aspek.keajegan,
+            ketahanan_score: aspek.ketahanan,
             avg_soal_per_segmen: aspek.avgDikerjakan,
-            std_deviasi:         aspek.sd,
-            avg_paruh1:          aspek.avg1,
-            avg_paruh2:          aspek.avg2,
-
-            // Data per segmen (seg1_dikerjakan, seg1_benar, seg2_dikerjakan, ...)
+            std_deviasi: aspek.sd,
+            avg_paruh1: aspek.avg1,
+            avg_paruh2: aspek.avg2,
             ...segDetail
         };
 
-        document.getElementById('status-db').textContent = 'Menyimpan data...';
-
         fetch(scriptURL, {
             method: 'POST',
-            mode:   'no-cors',
-            body:   JSON.stringify(payload)
+            mode: 'no-cors',
+            body: JSON.stringify(payload)
         })
         .then(() => {
             document.getElementById('status-db').textContent = '✓ Data berhasil tersimpan';
