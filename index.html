@@ -79,23 +79,34 @@
     </style>
 </head>
 <body>
-
 <div class="screen active" id="intro">
     <div class="inner">
+        <img src="logo.png" class="logo-banner">
         <h1>Tes Kraepelin</h1>
-        <p style="margin-bottom: 25px; color:#9b9b96;">PT. Hexa Daya Solusi</p>
-        <input type="text" id="namaKandidat" class="input-field" style="margin-bottom:25px" placeholder="Nama Lengkap">
-        <input type="email" id="emailKandidat" class="input-field" placeholder="Email">
-        <button class="btn-action" onclick="toGuide()">Lanjut →</button>
+        <p style="font-weight: 600; margin-bottom: 20px; color:#6b6b66">PT. Hexa Daya Solusi</p>
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="namaKandidat" class="input-field" placeholder="Nama lengkap">
+        </div>
+        <div class="input-group">
+            <label>Alamat Email</label>
+            <input type="email" id="emailKandidat" class="input-field" placeholder="contoh@email.com">
+        </div>
+        <button class="btn-action" onclick="toGuide()">Lanjut ke Panduan →</button>
     </div>
 </div>
-
 <div class="screen" id="guide">
     <div class="inner">
-        <h2>Instruksi</h2>
-        <p style="margin: 20px 0; font-size: 15px; color: #6b6b66;">Jumlahkan angka <b>Atas</b> dan <b>Bawah</b>. Masukkan digit satuannya pada kotak di antara kedua angka tersebut.</p>
-        <button class="btn-action" onclick="startTest()">Mulai Tes</button>
+        <h1>Instruksi Tes</h1>
+        <div style="text-align: left; background: #f8f8f6; padding: 20px; border-radius: 16px; margin: 20px 0; font-size: 15px; line-height: 1.5;">
+            <p>• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawahnya</b>.</p>
+            <p>• Masukkan <b>Digit Terakhir</b> (Contoh: 8+7=15, ketik 5).</p>
+            <p>• Kotak jawaban ada di tengah kanan angka.</p>
+            <p>• Total 40 segmen, masing-masing 30 detik.</p>
+        </div>
+        <button class="btn-action" onclick="startTest()">Mulai Tes Sekarang →</button>
     </div>
+
 </div>
 
 <div class="screen" id="test">
