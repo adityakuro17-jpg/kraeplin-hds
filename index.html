@@ -335,18 +335,21 @@
         };
 
         fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            document.getElementById('status-db').textContent = '✓ Data berhasil tersimpan';
-            document.getElementById('status-db').style.color = '#15803d';
-        })
-        .catch(() => {
-            document.getElementById('status-db').textContent = '⚠ Gagal menyimpan — periksa koneksi';
-            document.getElementById('status-db').style.color = '#b91c1c';
-        });
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+})
+.then(res => res.text())
+.then(res => {
+    console.log("Response:", res);
+    document.getElementById('status-db').textContent = '✓ Data berhasil tersimpan';
+})
+.catch(err => {
+    console.error(err);
+    document.getElementById('status-db').textContent = '❌ Gagal kirim data';
+});
     }
 </script>
 </body>
