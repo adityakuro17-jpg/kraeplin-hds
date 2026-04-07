@@ -12,86 +12,76 @@
         .screen.active { display: flex; flex-direction: column; }
         
         #intro, #guide, #result { align-items: center; justify-content: center; padding: 2rem; text-align: center; overflow-y: auto; }
-        .inner { max-width: 420px; width: 100%; }
-        .logo-banner { width: 100%; max-width: 280px; margin-bottom: 20px; }
-        .input-group { text-align: left; margin-bottom: 15px; }
-        .input-group label { font-size: 12px; font-weight: 600; color: #9b9b96; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .input-field { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; outline: none; }
+        .inner { max-width: 400px; width: 100%; }
+        .logo-banner { width: 100%; max-width: 250px; margin-bottom: 20px; }
         .btn-action { width: 100%; padding: 18px; background: #1a1a18; color: #fff; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; }
 
-        .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; }
-        .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-weight: 700; font-size: 18px; }
+        .test-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #2563eb; color: white; z-index: 100; font-weight: 600; }
+        .timer-box { background: rgba(0,0,0,0.2); padding: 8px 18px; border-radius: 10px; font-family: 'DM Mono'; font-size: 18px; }
 
-        /* KRAEPELIN VIEWPORT */
-        .kraepelin-view { flex: 1; display: flex; justify-content: center; overflow: hidden; background: #ffffff; position: relative; }
-        
-        /* Container untuk scroll */
+        /* VIEWPORT UTAMA */
+        .kraepelin-view { flex: 1; display: flex; justify-content: center; overflow: hidden; background: #ffffff; }
+
+        /* KONTINER SOAL CONTINUOUS */
         .scroll-container { 
             display: flex; 
             flex-direction: column; 
-            padding-top: 40vh; /* Memulai di tengah layar */
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 300px; 
+            padding-top: 40vh; /* Agar soal mulai dari tengah layar */
+            transition: transform 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
+            width: 280px; 
         }
 
-        /* BARIS DATA */
-        .data-row { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100px; /* Tinggi baris tetap untuk kalkulasi scroll */
-            position: relative;
-            gap: 20px;
-        }
-
-        .soal-column {
+        /* BARIS SOAL: Berisi satu angka */
+        .num-row {
+            height: 60px; /* Jarak antar angka */
             display: flex;
-            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            width: 60px;
+            padding-left: 40px;
+            font-family: 'DM Mono', monospace;
+            font-size: 52px;
+            font-weight: 700;
+            color: #1a1a18;
+            position: relative;
         }
 
-        .soal-cell { 
-            font-family: 'DM Mono', monospace; 
-            font-size: 56px; 
-            font-weight: 700; 
-            line-height: 1;
-        }
-
-        /* AREA JAWABAN & SIMBOL */
-        .ans-wrapper { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px;
-            width: 140px;
+        /* AREA JAWABAN: Ditempatkan ABSOLUTE di celah antara dua baris angka */
+        .ans-zone {
+            position: absolute;
+            right: 20px;
+            top: 30px; /* Menempatkan di tengah-tengah (60px / 2) */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 5;
         }
 
         .plus-sign {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
             color: #cbd5e1;
             user-select: none;
         }
 
         .ans-input { 
-            width: 70px; 
-            height: 70px; 
+            width: 65px; 
+            height: 65px; 
             border: 3px solid #e2e8f0; 
             border-radius: 16px; 
             background: #fff; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-size: 38px; 
+            font-size: 36px; 
             font-weight: 700; 
             color: #2563eb;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
 
-        .ans-input.active { border-color: #2563eb; background: #f0f7ff; box-shadow: 0 0 15px rgba(37, 99, 235, 0.2); transform: scale(1.05); }
+        .ans-input.active { border-color: #2563eb; background: #f0f7ff; box-shadow: 0 0 15px rgba(37, 99, 235, 0.15); transform: scale(1.05); }
         .ans-input.filled { border-color: #1a1a18; background: #f8f8f6; color: #444; }
 
-        /* KEYBOARD */
+        /* KEYPAD */
         .floating-keypad { background: #1a1a18; padding: 15px 10px 30px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; z-index: 100; }
         .kbtn { background: #334155; border: none; height: 55px; border-radius: 12px; color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; }
         .kbtn:active { background: #2563eb; }
@@ -101,30 +91,19 @@
 
 <div class="screen active" id="intro">
     <div class="inner">
-        <img src="logo.png" class="logo-banner">
         <h1>Tes Kraepelin</h1>
-        <p style="font-weight: 600; margin-bottom: 20px; color:#6b6b66">PT. Hexa Daya Solusi</p>
-        <div class="input-group">
-            <label>Nama Lengkap</label>
-            <input type="text" id="namaKandidat" class="input-field">
-        </div>
-        <div class="input-group">
-            <label>Alamat Email</label>
-            <input type="email" id="emailKandidat" class="input-field">
-        </div>
-        <button class="btn-action" onclick="toGuide()">Lanjut ke Panduan →</button>
+        <p style="margin-bottom: 25px; color:#9b9b96;">PT. Hexa Daya Solusi</p>
+        <input type="text" id="namaKandidat" class="input-field" style="margin-bottom:10px" placeholder="Nama Lengkap">
+        <input type="email" id="emailKandidat" class="input-field" placeholder="Email">
+        <button class="btn-action" onclick="toGuide()">Lanjut →</button>
     </div>
 </div>
 
 <div class="screen" id="guide">
     <div class="inner">
-        <h1>Instruksi Tes</h1>
-        <div style="text-align: left; background: #f8f8f6; padding: 20px; border-radius: 16px; margin: 20px 0; font-size: 15px; line-height: 1.5;">
-            <p>• Jumlahkan angka <b>Atas</b> dengan angka <b>Bawah</b>.</p>
-            <p>• Masukkan <b>Digit Satuan</b> (Contoh: 9+6=15, ketik 5).</p>
-            <p>• Perhatikan simbol <b>+</b> di antara angka.</p>
-        </div>
-        <button class="btn-action" onclick="startTest()">Mulai Tes →</button>
+        <h2>Instruksi</h2>
+        <p style="margin: 20px 0; font-size: 15px; color: #6b6b66;">Jumlahkan angka <b>Atas</b> dan <b>Bawah</b>. Masukkan digit satuannya pada kotak di antara kedua angka tersebut.</p>
+        <button class="btn-action" onclick="startTest()">Mulai Tes</button>
     </div>
 </div>
 
@@ -144,32 +123,31 @@
 
 <div class="screen" id="result">
     <div class="inner">
-        <h1>Tes Selesai</h1>
-        <div style="background: #1a1a18; color: #fff; padding: 50px; border-radius: 28px; margin: 20px 0;">
-            <div style="font-size: 12px; opacity: 0.6; margin-bottom: 10px;">TOTAL BENAR</div>
-            <div style="font-size: 84px; font-weight: 700;" id="r-score">0</div>
-            <p id="status-db" style="color: #4ade80; display: none; margin-top: 15px;">✓ Data Tersimpan</p>
+        <h1>Selesai</h1>
+        <div style="background: #1a1a18; color: #fff; padding: 40px; border-radius: 20px; margin: 20px 0;">
+            <div style="font-size: 80px; font-weight: 700;" id="r-score">0</div>
+            <p>Jawaban Benar</p>
         </div>
-        <button class="btn-action" onclick="location.reload()">Selesai</button>
+        <button class="btn-action" onclick="location.reload()">Keluar</button>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyiFQIx8INQlPZFNfOSoKJiTdG_3UEsTWy38Ps9z-2gamicU9d6TWQqzZJorDzj7Yyw/exec';
+    const scriptURL = 'URL_WEB_APP_ANDA';
     let namaUser, emailUser, totalCorrect = 0, totalAns = 0;
     let curSeg = 1, timeLeft = 30, currentIdx = 0, pool = [];
     let segData = []; let segDikerjakan = 0, segBenar = 0;
 
     window.addEventListener('keydown', (e) => {
-        if (document.getElementById('test').classList.contains('active')) {
-            if (e.key >= '0' && e.key <= '9') handleInput(parseInt(e.key));
+        if (document.getElementById('test').classList.contains('active') && e.key >= '0' && e.key <= '9') {
+            handleInput(parseInt(e.key));
         }
     });
 
     function toGuide() {
-        namaUser = document.getElementById('namaKandidat').value.trim();
-        emailUser = document.getElementById('emailKandidat').value.trim();
-        if (namaUser.length < 3 || !emailUser.includes('@')) return alert("Input tidak valid!");
+        namaUser = document.getElementById('namaKandidat').value;
+        emailUser = document.getElementById('emailKandidat').value;
+        if (!namaUser || !emailUser) return alert("Isi data!");
         document.getElementById('intro').classList.remove('active');
         document.getElementById('guide').classList.add('active');
     }
@@ -188,23 +166,21 @@
         const container = document.getElementById('scroll-content');
         container.innerHTML = '';
         pool = [];
-        for (let i = 0; i <= 70; i++) pool.push(Math.floor(Math.random() * 9) + 1);
+        // Generate angka soal
+        for (let i = 0; i <= 80; i++) pool.push(Math.floor(Math.random() * 9) + 1);
 
-        for (let i = 0; i < 65; i++) {
+        for (let i = 0; i < pool.length; i++) {
             const row = document.createElement('div');
-            row.className = 'data-row';
+            row.className = 'num-row';
+            row.innerHTML = pool[i];
             
-            // Layout: Angka Kiri | Simbol + & Kotak Jawaban Kanan
-            let actionHtml = '';
-            if (i < 64) {
-                actionHtml = `
-                    <div class="ans-wrapper">
-                        <span class="plus-sign">+</span>
-                        <div class="ans-input" id="ans-${i}"></div>
-                    </div>`;
+            // Masukkan kotak jawaban di ANTARA baris i dan i+1
+            if (i < pool.length - 1) {
+                const ansZone = document.createElement('div');
+                ansZone.className = 'ans-zone';
+                ansZone.innerHTML = `<span class="plus-sign">+</span><div class="ans-input" id="ans-${i}"></div>`;
+                row.appendChild(ansZone);
             }
-
-            row.innerHTML = `<div class="soal-column"><div class="soal-cell">${pool[i]}</div></div>${actionHtml}`;
             container.appendChild(row);
         }
         updateActiveUI();
@@ -215,25 +191,25 @@
         const activeBox = document.getElementById(`ans-${currentIdx}`);
         if (activeBox) {
             activeBox.classList.add('active');
-            // Scroll mendarat tepat karena tinggi baris konsisten (100px)
-            const offset = currentIdx * 100;
+            // Tinggi baris dikunci 60px. Scroll dihitung per angka.
+            const offset = currentIdx * 60; 
             document.getElementById('scroll-content').style.transform = `translateY(-${offset}px)`;
         }
     }
 
     function handleInput(n) {
         const correct = (pool[currentIdx] + pool[currentIdx + 1]) % 10;
-        const isBenar = (n === correct);
-        if (isBenar) { totalCorrect++; segBenar++; }
+        if (n === correct) { totalCorrect++; segBenar++; }
         totalAns++; segDikerjakan++;
 
         const box = document.getElementById(`ans-${currentIdx}`);
-        box.textContent = n;
-        box.classList.add('filled');
-
-        currentIdx++;
-        if (currentIdx < 64) updateActiveUI();
-        else { saveSegment(); setupSegment(); }
+        if (box) {
+            box.textContent = n;
+            box.classList.add('filled');
+            currentIdx++;
+            if (currentIdx < pool.length - 1) updateActiveUI();
+            else setupSegment();
+        }
     }
 
     function saveSegment() { segData.push({ dikerjakan: segDikerjakan, benar: segBenar }); }
@@ -254,38 +230,11 @@
         }, 1000);
     }
 
-    function hitungAspek() {
-        const n = segData.length || 1;
-        const dikerjakanArr = segData.map(d => d.dikerjakan);
-        const totalDikerjakan = dikerjakanArr.reduce((a, b) => a + b, 0);
-        const avgDikerjakan = totalDikerjakan / n;
-        const kecepatan = Math.min(100, Math.max(0, (avgDikerjakan - 10) / 40 * 100));
-        const ketelitian = totalDikerjakan > 0 ? (totalCorrect / totalDikerjakan) * 100 : 0;
-        const mean = avgDikerjakan;
-        const sd = Math.sqrt(dikerjakanArr.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
-        const cv = mean > 0 ? (sd / mean) * 100 : 100;
-        const keajegan = Math.max(0, 100 - cv);
-        const half = Math.floor(n / 2);
-        const avg1 = dikerjakanArr.slice(0, half).reduce((a, b) => a + b, 0) / (half || 1);
-        const avg2 = dikerjakanArr.slice(half).reduce((a, b) => a + b, 0) / (n - half || 1);
-        const drop = avg1 > 0 ? Math.max(0, (avg1 - avg2) / avg1) * 100 : 0;
-        const ketahanan = Math.max(0, 100 - (drop * 2));
-
-        return { kecepatan: Math.round(kecepatan), ketelitian: Math.round(ketelitian), keajegan: Math.round(keajegan), ketahanan: Math.round(ketahanan), totalDikerjakan };
-    }
-
     function endTest() {
         document.getElementById('test').classList.remove('active');
         document.getElementById('result').classList.add('active');
-        const hasil = hitungAspek();
         document.getElementById('r-score').textContent = totalCorrect;
-        const payload = {
-            nama: namaUser, email: emailUser, timestamp: new Date().toISOString(),
-            total_benar: totalCorrect, total_dikerjakan: hasil.totalDikerjakan, akurasi: hasil.ketelitian + "%",
-            kecepatan_score: hasil.kecepatan, ketelitian_score: hasil.ketelitian, keajegan_score: hasil.keajegan, ketahanan_score: hasil.ketahanan
-        };
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) })
-        .then(() => { document.getElementById('status-db').style.display = 'block'; });
+        // Kirim data ke spreadsheet (sesuaikan payloadnya)
     }
 </script>
 </body>
